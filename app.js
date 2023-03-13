@@ -4,6 +4,8 @@ const galleryHeader = document.querySelector('.gallery-header');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
+const errorMassage = document.getElementById('error-massage');
+const search = document.getElementById('search');
 // selected image 
 let sliders = [];
 
@@ -39,12 +41,13 @@ let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.add('added');
- 
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    sliders = sliders.filter(slider => slider != img)
+    element.classList.remove('added');
   }
 }
 var timer
@@ -113,10 +116,25 @@ searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
-  getImages(search.value)
-  sliders.length = 0;
+  if (search.value.length == 0) {
+    errorMassage.innerText = 'Please Provide a valid Input';
+
+  }
+  else {
+    getImages(search.value)
+    sliders.length = 0;
+    errorMassage.innerText = '';
+    search.value = '';
+  }
 })
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+search.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("search-btn").click();
+  }
+});
