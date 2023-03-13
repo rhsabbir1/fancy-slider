@@ -33,7 +33,15 @@ const showImages = (images) => {
 const getImages = (query) => {
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hits))
+    .then(data => {
+      if (data.hits.length == 0) {
+        errorMassage.innerText = 'Please Provide a valid Input';
+        imagesArea.style.display = "none";
+      }
+      else {
+        showImages(data.hits)
+      }
+    })
     .catch(err => console.log(err))
 }
 
@@ -68,21 +76,28 @@ const createSlider = () => {
   sliderContainer.appendChild(prevNext)
   document.querySelector('.main').style.display = 'block';
   // hide image aria
-  imagesArea.style.display = 'none';
+  
   const duration = document.getElementById('duration').value || 1000;
-  sliders.forEach(slide => {
-    let item = document.createElement('div')
-    item.className = "slider-item";
-    item.innerHTML = `<img class="w-100"
-    src="${slide}"
-    alt="">`;
-    sliderContainer.appendChild(item)
-  })
-  changeSlide(0)
-  timer = setInterval(function () {
-    slideIndex++;
-    changeSlide(slideIndex);
-  }, duration);
+  if(duration < 0){
+    errorMassage.innerText = 'Please Provide a valid Input';
+    imagesArea.style.display = 'none';
+  }
+  else{
+    sliders.forEach(slide => {
+      
+      let item = document.createElement('div')
+      item.className = "slider-item";
+      item.innerHTML = `<img class="w-100"
+      src="${slide}"
+      alt="">`;
+      sliderContainer.appendChild(item)
+    })
+    changeSlide(0)
+    timer = setInterval(function () {
+      slideIndex++;
+      changeSlide(slideIndex);
+    }, duration);
+  }
 }
 
 // change slider index 
@@ -116,9 +131,9 @@ searchBtn.addEventListener('click', function () {
   clearInterval(timer);
   const search = document.getElementById('search');
   if (search.value.length == 0) {
-    
+
     errorMassage.innerText = 'Please Provide a valid Input';
-    imagesArea.style.display ="none";
+    imagesArea.style.display = "none";
   }
   else {
     getImages(search.value)
@@ -132,7 +147,7 @@ sliderBtn.addEventListener('click', function () {
   createSlider()
 })
 
-search.addEventListener("keypress", function(event) {
+search.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     event.preventDefault();
     document.getElementById("search-btn").click();
