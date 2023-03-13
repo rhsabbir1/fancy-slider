@@ -41,7 +41,6 @@ let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.add('added');
-
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
@@ -117,8 +116,9 @@ searchBtn.addEventListener('click', function () {
   clearInterval(timer);
   const search = document.getElementById('search');
   if (search.value.length == 0) {
+    
     errorMassage.innerText = 'Please Provide a valid Input';
-
+    imagesArea.style.display ="none";
   }
   else {
     getImages(search.value)
